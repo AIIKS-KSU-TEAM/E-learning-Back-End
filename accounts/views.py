@@ -5,7 +5,21 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
+from rest_framework import viewsets
+from .models import Teacher
+from .serializers import TeacherSerializer
+from rest_framework.response import Response
+from .models import Teacher
+
+@api_view(['GET'])
+def get_teacher_count(request):
+    teacher_count = Teacher.objects.count()
+    return Response({'total_teachers': teacher_count})
+
+
+class TeacherViewSet(viewsets.ModelViewSet):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
 
 
 class RegisterView(APIView):
