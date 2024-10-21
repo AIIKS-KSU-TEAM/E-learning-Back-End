@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",  # OwnApp
     "courses.apps.CoursesConfig",  # OwnApp
     "rest_framework",  # PyPI
+    "rest_framework.authtoken",  # PyPI
     "corsheaders",  # PyPI
     "rest_framework_simplejwt.token_blacklist",  # PyPI
 ]
@@ -130,9 +132,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+}
+
+# Simple JSON Web Token Authentication Settings
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+    "UPDATE_LAST_LOGIN": True,
 }
 
 # django-cors-headers settings

@@ -10,6 +10,13 @@ from .serializers import TeacherSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from accounts.serializers import LoginSerializer
+
+
+class LoginView(TokenObtainPairView):
+    serializer_class = LoginSerializer
+
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -26,10 +33,10 @@ class LogoutView(APIView):
             return Response({"error": str(e)}, status=400)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_teacher_count(request):
     teacher_count = Teacher.objects.count()
-    return Response({'total_teachers': teacher_count})
+    return Response({"total_teachers": teacher_count})
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
@@ -41,19 +48,24 @@ class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        email = request.data.get('email')
-        user = User.objects.create_user(username=username, password=password, email=email)
+        username = request.data.get("username")
+        password = request.data.get("password")
+        email = request.data.get("email")
+        user = User.objects.create_user(
+            username=username, password=password, email=email
+        )
         return Response({"message": "User created successfully"})
-    
-@api_view(['POST'])
+
+
+@api_view(["POST"])
 def login_view(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+    username = request.data.get("username")
+    password = request.data.get("password")
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-        return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
     else:
-        return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST
+        )
