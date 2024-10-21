@@ -19,16 +19,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "courses.apps.CoursesConfig",  # OwnApp
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "accounts.apps.AccountsConfig",  # OwnApp
+    "courses.apps.CoursesConfig",  # OwnApp
     "rest_framework",  # PyPI
     "corsheaders",  # PyPI
-    "accounts",  # OwnApp
     "rest_framework_simplejwt.token_blacklist",  # PyPI
 ]
 
@@ -91,6 +91,8 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+AUTH_USER_MODEL = "accounts.User"
 
 
 # Internationalization
