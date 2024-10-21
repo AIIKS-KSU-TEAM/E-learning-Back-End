@@ -60,3 +60,57 @@ class AuthenticationTest(APITestCase):
 
     def get_data(self):
         return {"name": "John Doe", "email": "jdoe@gmail.com", "password": "pa$$w0rd!"}
+
+
+class RegistrationTest(APITestCase):
+
+    def setUp(self):
+        self.url = reverse("register")
+
+    def test_registration_with_valid_data(self):
+        # Test a successful registration
+        data = self.get_data()
+        response = self.client.post(self.url, data, format="json")
+
+        # Assert that the status code is 201 Created
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Check that the required keys are in the response
+        self.assertIn("access_token", response.data)
+        self.assertIn("refresh_token", response.data)
+        self.assertIn("token_type", response.data)
+
+        # Verify that the token_type is "Bearer"
+        self.assertEqual(response.data["token_type"], "Bearer")
+
+        # Verify that the user was actually created
+        self.assertTrue(User.objects.filter(email=data["email"]).exists())
+
+    def test_registration_with_missing_password(self):
+        # Test registration with missing password field
+        data = self.get_data()
+        data.pop("password")
+        response = self.client.post(self.url, data, format="json")
+
+        # Assert that the status code is 400 Bad Request
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check for the error message about the missing password
+        self.assertIn("password", response.data)
+
+    def test_registration_with_existing_email(self):
+        # Create a user with the same email beforehand
+        data = self.get_data()
+        User.objects.create_user(**data)
+
+        # Attempt to register with the same email
+        response = self.client.post(self.url, data, format="json")
+
+        # Assert that the status code is 400 Bad Request due to unique constraint
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check for the error message related to email uniqueness
+        self.assertIn("email", response.data)
+
+    def get_data(self):
+        return {"name": "John Doe", "email": "jdoe@gmail.com", "password": "pa$$w0rd!"}
