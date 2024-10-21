@@ -1,10 +1,9 @@
 from rest_framework import status, permissions, viewsets, generics
 from rest_framework.response import Response
-from accounts.models import Teacher
-from accounts.serializers import TeacherSerializer, RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from accounts.serializers import TeacherSerializer, RegisterSerializer, LoginSerializer
+from accounts.models import Teacher
 
 
 class LoginView(TokenObtainPairView):
@@ -26,19 +25,35 @@ class RegisterView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class LogoutView(APIView):
+class LogoutView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        try:
-            refresh_token = request.data.get("refresh_token")
-            if refresh_token:
-                token = RefreshToken(refresh_token)
-                token.blacklist()
 
-            return Response({"message": "Logout successful"}, status=200)
-        except Exception as e:
-            return Response({"error": str(e)}, status=400)
+        refresh_token = request.data.get("refresh")
+
+        # Ensure the refresh token is provided
+        if not refresh_token:
+            return Response(
+                {"detail": "Refresh token is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+
+            token = RefreshToken(refresh_token)
+
+            token.blacklist()
+
+            return Response(
+                {"detail": "Successfully logged out."},
+                status=status.HTTP_205_RESET_CONTENT,
+            )
+
+        except Exception:
+            return Response(
+                {"detail": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class TeacherViewSet(viewsets.ModelViewSet):

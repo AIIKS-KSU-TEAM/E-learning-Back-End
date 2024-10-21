@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -114,3 +115,48 @@ class RegistrationTest(APITestCase):
 
     def get_data(self):
         return {"name": "John Doe", "email": "jdoe@gmail.com", "password": "pa$$w0rd!"}
+
+
+class LogoutTest(APITestCase):
+
+    def setUp(self):
+        data = self.get_data()
+        self.user = User.objects.create_user(**data)
+        self.client.force_authenticate(user=self.user)
+        self.refresh = RefreshToken.for_user(self.user)
+        self.url = reverse("logout")
+
+    def get_data(self):
+        return {"name": "John Doe", "email": "jdoe@gmail.com", "password": "pa$$w0rd!"}
+
+    def test_logout_with_valid_refresh_token(self):
+        # Test a successful logout with a valid refresh token
+        data = {"refresh": str(self.refresh)}
+        response = self.client.post(self.url, data, format="json")
+
+        # Assert that the status code is 205 Reset Content
+        self.assertEqual(response.status_code, status.HTTP_205_RESET_CONTENT)
+
+        # Check that the response contains the success message
+        self.assertEqual(response.data["detail"], "Successfully logged out.")
+
+    def test_logout_with_invalid_refresh_token(self):
+        # Test logout with an invalid refresh token
+        data = {"refresh": "invalid_token"}
+        response = self.client.post(self.url, data, format="json")
+
+        # Assert that the status code is 400 Bad Request
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check that the response contains an error message
+        self.assertEqual(response.data["detail"], "Invalid refresh token.")
+
+    def test_logout_without_refresh_token(self):
+        # Test logout without providing a refresh token
+        response = self.client.post(self.url, {}, format="json")
+
+        # Assert that the status code is 400 Bad Request
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Check that the response contains an error message
+        self.assertEqual(response.data["detail"], "Refresh token is required.")
