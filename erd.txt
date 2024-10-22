@@ -1,0 +1,146 @@
+1. User
+=======
+- id
+- name
+- email
+- password
+- is_staff
+- is_superuser
+- is_active
+
+2. Teacher
+==========
+- id
+- first_name
+- last_name
+- subject
+
+
+3. UserProfile
+==============
+- id
+- user_id
+- phone_number
+
+4. Subject
+==========
+- id
+- title
+- slug
+- description
+- created
+- modified
+
+5. Course
+=========
+- id
+- title
+- slug
+- description
+- owner_user_id
+- subject_id
+- image
+- duration
+- fees
+- level
+- instructor_based
+
+6. Module
+=========
+- id
+- title
+- slug
+- description
+- course_id
+- order
+
+7. Content
+==========
+- id
+- module_id
+- content_type_id
+- object_id
+- order
+- created
+- modified
+
+8. Text
+=======
+- id
+- owner_user_id
+- title
+- content
+
+9. Video
+========
+- id
+- owner_user_id
+- title
+- url
+
+10. Image
+=========
+- id
+- owner_user_id
+- title
+- file
+
+11. File
+========
+- id
+- owner_user_id
+- title
+- file
+
+
+12. Group
+=========
+- id
+- name
+- course_id
+- instructor_user_id
+- start
+- end
+- enrollment_key
+- active
+
+
+13. Enrollment
+==============
+- id
+- course_id
+- student_user_id
+- instructor_user_id
+- group_id
+- enrollment_date
+- total_fees
+- paid_fees
+- status_fees (Not Paid, Partiall Paid, Fully Paid)
+- completed
+- approved
+- created
+- modified
+
+14. Review
+==========
+- id
+- author_user_id
+- course_id
+- instructor_user_id
+- rating (1..5)
+- comment
+- created
+- modified
+
+
+15. Team
+========
+- id
+- group_id
+- course_id
+- title
+- slug
+- description
+- created
+- modified
+
