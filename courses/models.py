@@ -52,7 +52,7 @@ class Module(TitleDescriptionModel):
 
 
 # Content Model (Generic relation to the specific content types)
-class Content(models.Model):
+class Content(TimeStampedModel):
     module = models.ForeignKey(
         Module, related_name="contents", on_delete=models.CASCADE
     )
@@ -95,7 +95,7 @@ class Image(models.Model):
         User, related_name="images_related", on_delete=models.CASCADE
     )
     title = models.CharField(max_length=200)
-    file = models.ImageField(upload_to="images")  # Image file upload
+    file = models.ImageField(upload_to="images/%Y/%m/%d/")  # Image file upload
 
     def __str__(self):
         return self.title
@@ -107,7 +107,7 @@ class File(models.Model):
         User, related_name="files_related", on_delete=models.CASCADE
     )
     title = models.CharField(max_length=200)
-    file = models.FileField(upload_to="files")  # File upload (e.g., PDFs)
+    file = models.FileField(upload_to="files/%Y/%m/%d/")  # File upload (e.g., PDFs)
 
     def __str__(self):
         return self.title

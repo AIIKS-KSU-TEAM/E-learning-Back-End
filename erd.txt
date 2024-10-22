@@ -126,7 +126,7 @@
 - id
 - author_user_id
 - course_id
-- recipient_id
+- instructor_user_id
 - rating (1..5)
 - comment
 - created
@@ -140,7 +140,7 @@
 - course_id
 - title
 - slug
-- notes
+- description
 - created
 - modified
 

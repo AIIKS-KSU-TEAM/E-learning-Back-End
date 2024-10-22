@@ -14,8 +14,8 @@ class UserModelTest(TestCase):
         data = self.get_data()
         user = User.objects.create_user(**data)
 
-        self.assertEquals(user.name, data["name"])
-        self.assertEquals(user.email, data["email"])
+        self.assertEqual(user.name, data["name"])
+        self.assertEqual(user.email, data["email"])
         self.assertTrue(user.check_password(data["password"]))
 
     def test_email_uniqueness(self):

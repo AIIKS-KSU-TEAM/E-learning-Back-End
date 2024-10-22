@@ -24,9 +24,9 @@ class SubjectModelTest(TestCase):
 
         self.assertIsNotNone(subject)
 
-        self.assertEquals(subject.title, data["title"])
+        self.assertEqual(subject.title, data["title"])
 
-        self.assertEquals(subject.description, data["description"])
+        self.assertEqual(subject.description, data["description"])
 
         self.assertIsNotNone(subject.slug)
 
@@ -117,9 +117,7 @@ class ContentModelTest(TestCase):
             title="Introduction", description="Intro to Algebra", course=self.course
         )
         self.text = Text.objects.create(
-            owner=self.user, 
-            title="Text Content", 
-            content="This is a text content."
+            owner=self.user, title="Text Content", content="This is a text content."
         )
         self.content_type = ContentType.objects.get_for_model(self.text)
 
