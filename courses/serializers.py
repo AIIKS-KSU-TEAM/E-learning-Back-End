@@ -10,16 +10,13 @@ class SubjectSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ['subject', 'title', 'description']  # Specify expected fields
+        fields = ['id', 'subject', 'title', 'description', 'created']
 
     def create(self, validated_data):
-        # Extract the owner from the context (request.user)
         owner = self.context['request'].user
         
-        # Remove 'owner' from validated_data if it exists
-        validated_data.pop('owner', None)  # Ensure no owner key is passed
+        validated_data.pop('owner', None)  
         
-        # Save the course with the owner automatically assigned
         course = Course.objects.create(owner=owner, **validated_data)
         return course
 
