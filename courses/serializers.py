@@ -30,4 +30,4 @@ class ModuleSerializer(serializers.ModelSerializer):
 class ContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Content
-        fields = '__all__'
+        fields = ['id', 'content_type', 'content']

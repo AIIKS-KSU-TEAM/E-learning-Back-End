@@ -4,6 +4,8 @@ from .serializers import SubjectSerializer, CourseSerializer, ModuleSerializer, 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+
 
 class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
@@ -45,7 +47,48 @@ class ModuleViewSet(viewsets.ModelViewSet):
     serializer_class = ModuleSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=True, methods=['get', 'post'], url_path='contents')
+    def get_contents(self, request, pk=None):
+        """
+        Custom action to retrieve or create contents for a specific module.
+        Accessible at /api/modules/{moduleId}/contents/
+        """
+        try:
+            module = self.get_object()  # Get the specific module by primary key
+            
+            if request.method == 'GET':
+                # Retrieve contents related to this module
+                contents = module.contents.all()
+                serializer = ContentSerializer(contents, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            
+            elif request.method == 'POST':
+                # Create new content within this module
+                serializer = ContentSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save(module=module)  # Set the module foreign key
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Module.DoesNotExist:
+            return Response({"detail": "Module not found."}, status=status.HTTP_404_NOT_FOUND)
+        
 class ContentViewSet(viewsets.ModelViewSet):
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        """
+        Custom method to ensure 'module' is specified when creating a content.
+        """
+        module_id = self.request.data.get('module')
+        if not module_id:
+            raise ValidationError({'module': 'Module ID is required to create content.'})
+
+        try:
+            module = Module.objects.get(id=module_id)
+        except Module.DoesNotExist:
+            raise ValidationError({'module': 'Module does not exist.'})
+
+        serializer.save(module=module)
