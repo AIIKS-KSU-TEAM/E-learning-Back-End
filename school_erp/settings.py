@@ -31,8 +31,9 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",  # PyPI
     "corsheaders",  # PyPI
     "rest_framework_simplejwt.token_blacklist",  # PyPI
-    'django_extensions',
-    'courses',
+    "django_extensions",
+    "courses.apps.CoursesConfig",
+    "instructor.apps.InstructorConfig",
 ]
 
 MIDDLEWARE = [
