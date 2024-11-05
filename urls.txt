@@ -3,19 +3,19 @@ Instructors
 
 - /api/instructor/
 - /api/instructor/courses/ {LIST,CREATE}
-- /api/instructor/courses/<pk>/ {DETAILS, UPDATE, DELETE}
-- /api/instructor/courses/<pk>/modules/ {LIST, CREATE}
-- /api/instructor/courses/<pk>/modules/<pk>/ {DETAILS, UPDATE, DELETE}
-- /api/instructor/courses/<pk>/modules/<pk>/contents/ {LIST, CREATE}
-- /api/instructor/courses/<pk>/modules/<pk>/contents/<pk>/ {DETAILS, UPDATE, DELETE}
-- /api/instructor/courses/<pk>/assessments/ {LIST, CREATE}
-- /api/instructor/courses/<pk>/assessments/<pk>/ {DETAILS, UPDATE, DELETE}
-- /api/instructor/courses/<pk>/assessments/<pk>/scores/ {LIST, CREATE}
-- /api/instructor/courses/<pk>/assessments/<pk>/scores/<pk>/ {DETAILS, UPDATE, DELETE}
-- /api/instructor/courses/<pk>/teams/ {LIST, CREATE}
-- /api/instructor/courses/<pk>/teams/<id>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/courses/<course_pk>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/courses/<course_pk>/modules/ {LIST, CREATE}
+- /api/instructor/courses/<course_pk>/modules/<module_pk>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/courses/<course_pk>/modules/<module_pk>/contents/ {LIST, CREATE}
+- /api/instructor/courses/<course_pk>/modules/<module_pk>/contents/<content_pk>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/courses/<course_pk>/assessments/ {LIST, CREATE}
+- /api/instructor/courses/<course_pk>/assessments/<assessment_pk>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/courses/<course_pk>/assessments/<assessment_pk>/scores/ {LIST, CREATE}
+- /api/instructor/courses/<course_pk>/assessments/<assessment_pk>/scores/<score_pk>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/courses/<course_pk>/teams/ {LIST, CREATE}
+- /api/instructor/courses/<course_pk>/teams/<team_pk>/ {DETAILS, UPDATE, DELETE}
 - /api/instructor/students/ {LIST}
-- /api/instructor/students/<pk>/ {DETAILS}
+- /api/instructor/students/<student_pk>/ {DETAILS}
 - /api/instructor/enrollments/ {LIST}
-- /api/instructor/enrollments/<pk>/ {DETAILS, UPDATE, DELETE}
+- /api/instructor/enrollments/<enrollment_pk>/ {DETAILS, UPDATE, DELETE}
 

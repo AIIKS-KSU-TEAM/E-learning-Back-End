@@ -29,12 +29,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password"]
+        fields = ["name", "email", "password"]
 
     def create(self, validated_data):
         user = User.objects.create_user(
             email=validated_data["email"],
-            username=validated_data["username"],
+            name=validated_data["name"],
             password=validated_data["password"],
         )
         return user
@@ -58,4 +58,4 @@ class TeacherSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email"]
+        fields = ["id", "name", "email"]
