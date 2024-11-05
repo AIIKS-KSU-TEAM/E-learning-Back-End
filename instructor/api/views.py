@@ -6,7 +6,7 @@ from rest_framework.response import Response
 class InstructorView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self):
+    def get(self, request):
 
         return Response(
             {
