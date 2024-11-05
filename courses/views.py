@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
-from .models import Subject, Course, Module, Content
-from .serializers import SubjectSerializer, CourseSerializer, ModuleSerializer, ContentSerializer
+from .models import Subject, Course, Module, Content, Assignment
+from .serializers import SubjectSerializer, CourseSerializer, ModuleSerializer, ContentSerializer, AssignmentSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -92,3 +92,16 @@ class ContentViewSet(viewsets.ModelViewSet):
             raise ValidationError({'module': 'Module does not exist.'})
 
         serializer.save(module=module)
+
+class AssignmentViewSet(viewsets.ModelViewSet):
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        module_id = self.request.data.get('module')
+        try:
+            module = Module.objects.get(id=module_id)
+            serializer.save(module=module)
+        except Module.DoesNotExist:
+            raise ValidationError({"module": "Module not found."})

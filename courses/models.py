@@ -43,3 +43,12 @@ class Content(models.Model):
 
     def __str__(self):
         return f'{self.content_type}: {self.content[:20]}...'
+    
+class Assignment(models.Model):
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='assignments')
+    title = models.CharField(max_length=200)
+    file = models.FileField(upload_to='assignments/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

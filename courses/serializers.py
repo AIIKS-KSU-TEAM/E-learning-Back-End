@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Subject, Course, Module, Content
+from .models import Assignment
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,3 +32,8 @@ class ContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Content
         fields = ['id', 'content_type', 'content']
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = ['id', 'module', 'title', 'file', 'created_at']
