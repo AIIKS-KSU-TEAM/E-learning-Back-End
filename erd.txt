@@ -59,6 +59,8 @@
 - description
 - course_id
 - order
+- created
+- modified
 
 7. Content
 ==========

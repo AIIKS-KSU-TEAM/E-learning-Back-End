@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django_extensions.db.models import TimeStampedModel, TitleSlugDescriptionModel
 from django.utils.text import slugify
+from courses.fields import OrderField
 
 User = get_user_model()
 
@@ -49,10 +50,9 @@ class Course(TimeStampedModel, TitleSlugDescriptionModel):
         return self.title
 
 
-class Module(models.Model):
+class Module(TimeStampedModel, TitleSlugDescriptionModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="modules")
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    order = OrderField(blank=True, for_fields=["course"])
 
     def __str__(self):
         return self.title
