@@ -72,33 +72,38 @@
 - created
 - modified
 
-8. Text
-=======
+8. TextContentItem
+==================
 - id
 - owner_user_id
 - title
-- content
+- slug
+- description
+- body
+- created
+- modified
 
-9. Video
-========
+9. YoutubeVideoContentItem
+==========================
 - id
 - owner_user_id
 - title
+- slug
+- description
 - url
+- created
+- modified
 
-10. Image
-=========
+11. FileContentItem
+===================
 - id
 - owner_user_id
 - title
+- slug
+- description
 - file
-
-11. File
-========
-- id
-- owner_user_id
-- title
-- file
+- created
+- modified
 
 
 12. Group

@@ -1,6 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from courses.models import Subject, Course, Module
+from courses.models import Content, TextContentItem
+from courses.models import FileContentItem, YoutubeVideoContentItem
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -164,3 +167,130 @@ class ModuleModelTest(TestCase):
 
     def get_user_data(self):
         return {"name": "John Doe", "email": "jdoe@gmail.com", "password": "pa$$w0rd!"}
+
+
+class ContentModelTest(TestCase):
+
+    def setUp(self):
+        # Create common user, subject, course, and module
+        self.user = User.objects.create_user(
+            name="Jane Doe", email="jdoe@gmail.com", password="pa$$w0rd!"
+        )
+        self.subject = Subject.objects.create(
+            name="Mathematics", description="A sample subject"
+        )
+        self.course = Course.objects.create(
+            owner=self.user,
+            subject=self.subject,
+            title="Algebra 101",
+            description="An introductory course on Algebra.",
+        )
+        self.module = Module.objects.create(
+            course=self.course,
+            title="Module 1: Introduction to Algebra",
+            description="Introduction to Algebra concepts.",
+        )
+
+    def test_text_content_item_creation(self):
+        text_content = TextContentItem.objects.create(
+            owner=self.user,
+            title="Algebra Basics Text",
+            description="Basic concepts of Algebra in text format.",
+            text="This is an introduction to Algebra.",
+        )
+        content_type = ContentType.objects.get_for_model(TextContentItem)
+        content = Content.objects.create(
+            module=self.module,
+            content_type=content_type,
+            object_id=text_content.id,
+            order=1,
+        )
+        self.assertEqual(content.item, text_content)
+        self.assertEqual(content.module, self.module)
+        self.assertEqual(content.order, 1)
+
+    def test_file_content_item_creation(self):
+        file_content = FileContentItem.objects.create(
+            owner=self.user,
+            title="Algebra Worksheet",
+            description="Worksheet for Algebra basics.",
+            file="path/to/algebra_worksheet.pdf",
+        )
+        content_type = ContentType.objects.get_for_model(FileContentItem)
+        content = Content.objects.create(
+            module=self.module,
+            content_type=content_type,
+            object_id=file_content.id,
+            order=2,
+        )
+        self.assertEqual(content.item, file_content)
+        self.assertEqual(content.module, self.module)
+        self.assertEqual(content.order, 2)
+
+    def test_youtube_video_content_item_creation(self):
+        youtube_video = YoutubeVideoContentItem.objects.create(
+            owner=self.user,
+            title="Algebra Introduction Video",
+            description="A YouTube video introducing Algebra concepts.",
+            url="https://www.youtube.com/watch?v=example",
+        )
+        content_type = ContentType.objects.get_for_model(YoutubeVideoContentItem)
+        content = Content.objects.create(
+            module=self.module,
+            content_type=content_type,
+            object_id=youtube_video.id,
+            order=3,
+        )
+        self.assertEqual(content.item, youtube_video)
+        self.assertEqual(content.module, self.module)
+        self.assertEqual(content.order, 3)
+
+    def test_content_ordering_within_module(self):
+        text_content = TextContentItem.objects.create(
+            owner=self.user,
+            title="Algebra Basics Text",
+            description="Basic concepts of Algebra in text format.",
+            text="This is an introduction to Algebra.",
+        )
+        file_content = FileContentItem.objects.create(
+            owner=self.user,
+            title="Algebra Worksheet",
+            description="Worksheet for Algebra basics.",
+            file="path/to/algebra_worksheet.pdf",
+        )
+        youtube_video = YoutubeVideoContentItem.objects.create(
+            owner=self.user,
+            title="Algebra Introduction Video",
+            description="A YouTube video introducing Algebra concepts.",
+            url="https://www.youtube.com/watch?v=example",
+        )
+
+        content_type_text = ContentType.objects.get_for_model(TextContentItem)
+        content_type_file = ContentType.objects.get_for_model(FileContentItem)
+        content_type_video = ContentType.objects.get_for_model(YoutubeVideoContentItem)
+
+        # Create content items with explicit ordering
+        Content.objects.create(
+            module=self.module,
+            content_type=content_type_text,
+            object_id=text_content.id,
+            order=1,
+        )
+        Content.objects.create(
+            module=self.module,
+            content_type=content_type_file,
+            object_id=file_content.id,
+            order=2,
+        )
+        Content.objects.create(
+            module=self.module,
+            content_type=content_type_video,
+            object_id=youtube_video.id,
+            order=3,
+        )
+
+        # Verify the order
+        contents = list(self.module.contents.all())
+        self.assertEqual(contents[0].item, text_content)
+        self.assertEqual(contents[1].item, file_content)
+        self.assertEqual(contents[2].item, youtube_video)
