@@ -27,12 +27,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts.apps.AccountsConfig",  # OwnApp
-    "rest_framework",  # PyPI
-    "rest_framework.authtoken",  # PyPI
-    "corsheaders",  # PyPI
-    "rest_framework_simplejwt.token_blacklist",  # PyPI
+    "rest_framework",  
+    "rest_framework.authtoken",  
+    "corsheaders",  
+    "rest_framework_simplejwt.token_blacklist",  
     'django_extensions',
     'courses',
+    'support',
+    'sub_assignments',
 ]
 
 MIDDLEWARE = [
