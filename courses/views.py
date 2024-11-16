@@ -94,14 +94,26 @@ class ContentViewSet(viewsets.ModelViewSet):
         serializer.save(module=module)
 
 class AssignmentViewSet(viewsets.ModelViewSet):
-    queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+
+        module_id = self.kwargs.get('module_id')
+        print(module_id)
+        if module_id:
+            return Assignment.objects.filter(module_id=module_id)
+        return Assignment.objects.all()
+    
     def perform_create(self, serializer):
         module_id = self.request.data.get('module')
+        if not module_id:
+            raise ValidationError({"module": "Module ID is required."})
+        
         try:
             module = Module.objects.get(id=module_id)
             serializer.save(module=module)
         except Module.DoesNotExist:
             raise ValidationError({"module": "Module not found."})
+
+

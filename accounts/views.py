@@ -4,6 +4,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from accounts.serializers import TeacherSerializer, RegisterSerializer, LoginSerializer
 from accounts.models import Teacher
+from .serializers import UserProfileSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class LoginView(TokenObtainPairView):
@@ -59,3 +67,30 @@ class LogoutView(generics.GenericAPIView):
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        current_password = request.data.get("current_password")
+        new_password = request.data.get("new_password")
+
+        if not user.check_password(current_password):
+            return Response({"detail": "Current password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            validate_password(new_password, user)
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)
+            return Response({"detail": "Password updated successfully"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

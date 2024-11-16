@@ -45,7 +45,7 @@ class Content(models.Model):
         return f'{self.content_type}: {self.content[:20]}...'
     
 class Assignment(models.Model):
-    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='assignments')
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='assignments_from_courses')
     title = models.CharField(max_length=200)
     file = models.FileField(upload_to='assignments/')
     created_at = models.DateTimeField(auto_now_add=True)
